@@ -9,6 +9,7 @@ export default function weatherCheck (appid, city) {
       let query = data.weather[0].description
       if (28 <= data.main.temp) query += ' hot'
       if (data.main.temp <= 10) query += ' cold'
+      console.log(`Weather keyword: ${query}`)
       return query
     })
 }

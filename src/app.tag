@@ -1,11 +1,14 @@
 <app>
   <h1>Weather Jukebox</h1>
 
+  <p>{datetime}のおすすめ曲はこれ!</p>
+
   <section>
     <song each={results} cover={cover} link={link} title={title} artist={artist} preview={preview}/>
   </section>
 
   <script>
+    import moment from 'moment'
     import weatherCheck from './weather-check.js'
     import lookup from './itunes-lookup.js'
 
@@ -15,6 +18,7 @@
 
     /** ここに検索結果を保持 */
     this.results = []
+    this.datetime = moment().format('M月D日h時台')
 
     /** タグのマウント時に実行 */
     this.on('mount', () => {
