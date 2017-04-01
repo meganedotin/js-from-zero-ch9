@@ -1,35 +1,25 @@
 <app>
   <h1>Weather Jukebox</h1>
 
-  <p>"{query}"なときのオススメ</p>
-
   <section>
     <song each={results} cover={cover} link={link} title={title} artist={artist} preview={preview}/>
   </section>
 
   <script>
+    import weatherCheck from './weather-check.js'
     import lookup from './itunes-lookup.js'
 
-    const apiBase = 'http://api.openweathermap.org/data/2.5/weather'
+    /** 設定 */
     const appid = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
     const city = 'Tokyo'
-    const url = `${apiBase}?q=${city}&APPID=${appid}&units=metric`
 
     /** ここに検索結果を保持 */
-    this.query = ''
     this.results = []
 
     /** タグのマウント時に実行 */
     this.on('mount', () => {
-      window.fetch(url)
-        .then(response => response.json())
-        .then(data => {
-          let query = data.weather[0].description
-          if (28 <= data.main.temp) query += ' hot'
-          if (data.main.temp <= 10) query += ' cold'
-          this.update({query})
-          return lookup(query)
-        })
+      weatherCheck(appid, city)
+        .then(query => lookup(query))
         .then(results => this.update({results}))
     })
   </script>
