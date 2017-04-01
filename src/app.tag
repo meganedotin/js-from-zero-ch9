@@ -1,6 +1,8 @@
 <app>
   <h1>Weather Jukebox</h1>
 
+  <p>"{query}"なときのオススメ</p>
+
   <section>
     <song each={results} cover={cover} link={link} title={title} artist={artist} preview={preview}/>
   </section>
@@ -14,21 +16,21 @@
     const url = `${apiBase}?q=${city}&APPID=${appid}&units=metric`
 
     /** ここに検索結果を保持 */
+    this.query = ''
     this.results = []
 
     /** タグのマウント時に実行 */
-    const self = this // asyncの中から参照するため
-    this.on('mount', async function () {
-      const response = await window.fetch(url)
-      const data = await response.json()
-
-      let query = data.weather[0].description
-      if (28 <= data.main.temp) query += 'hot'
-      if (data.main.temp <= 10) query += 'cold'
-
-      const results = await lookup(query)
-
-      this.update({results}))
+    this.on('mount', () => {
+      window.fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          let query = data.weather[0].description
+          if (28 <= data.main.temp) query += ' hot'
+          if (data.main.temp <= 10) query += ' cold'
+          this.update({query})
+          return lookup(query)
+        })
+        .then(results => this.update({results}))
     })
   </script>
 
@@ -44,6 +46,9 @@
       font-weight: normal;
       padding-bottom: .3em;
       margin: 0 0 .5em;
+    }
+    p {
+      color: gray;
     }
     input[type=search] {
       border: 1px solid purple;
